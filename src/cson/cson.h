@@ -1,7 +1,7 @@
 /*
 	cson
 	File:/src/cson/cson.h
-	Date:2021.09.18
+	Date:2021.09.19
 	By MIT License.
 	Copyright (c) 2021 Suote127.All rights reserved.
 */
@@ -9,13 +9,16 @@
 #ifndef __CSON_H_INC__
 #define __CSON_H_INC__
 
+#include<stdlib.h>
+#include<setjmp.h>
+
 typedef struct {
 	char *path[16];
 	int level;
 	const char *p;
 	char *msg;
 	jmp_buf state;
-	size_t line;
+	unsigned long line;
 	void *ud;
 }CSON_Context;
 
