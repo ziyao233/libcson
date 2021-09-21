@@ -1,7 +1,7 @@
 /*
 	cson
 	File:/src/cson.c
-	Date:2021.09.20
+	Date:2021.09.21
 	By MIT License.
 	Copyright (c) 2021 Suote127.All rights reserved.
 */
@@ -109,6 +109,14 @@ static void next(CSON_Context *ctx,
 	return;
 }
 
+static void prefetch(CSON_Context *ctx,Token *token)
+{
+	const char *tmp = ctx->p;
+	next(ctx,token);
+	ctx->p = tmp;
+	return;
+}
+
 static void unexpected(CSON_Context *ctx,const char *expected,
 		       Token token)
 {
@@ -135,6 +143,42 @@ static void unexpected(CSON_Context *ctx,const char *expected,
 	return;
 }
 
+static void p_value(CSON_Context *ctx);
+static void p_object(CSON_Context *ctx);
+
+static void p_object(CSON_Context *ctx)
+{
+	Token token;
+
+	prefetch(ctx,&token);
+	ctx->level++;
+
+	while (token.type != TOKEN_EOS) {
+		if (token.type != TOKEN_STRING)
+			unexpected(ctx,"string",token);
+		next(ctx,&token);
+		ctx->path[ctx->level - 1] = token.value.string;
+
+		next(ctx,&token);
+		if (token.type != ':')
+			unexpected(ctx,"':'",token);
+	
+		p_value(ctx);
+
+		free(ctx->path[ctx->level - 1]);
+		prefetch(ctx,&token);
+		if (token.type != ',')
+			break;
+		next(ctx,&token);
+
+		prefetch(ctx,&token);
+	}
+
+	ctx->level--;
+
+	return;
+}
+
 static void p_value(CSON_Context *ctx)
 {
 	Token token;
@@ -151,6 +195,11 @@ static void p_value(CSON_Context *ctx)
 		value.type		= CSON_INTEGER;
 		value.value.integer	= token.value.integer;
 		ctx->handler(ctx,&value);
+	} else if (token.type == '{') {
+		p_object(ctx);
+		next(ctx,&token);
+		if (token.type != '}')
+			unexpected(ctx,"'}'",token);
 	} else {
 		unexpected(ctx,"value",token);
 	}
@@ -190,6 +239,11 @@ char *cson_fullpath(CSON_Context *ctx,char *buffer,size_t size)
 		if (used > size)
 			return NULL;
 		strcat(buffer,ctx->path[level]);
+		if (level != ctx->level - 1) {
+			buffer[used] = '.';
+			buffer[used + 1] = '\0';
+			used++;
+		}
 	}
 
 	return buffer;
