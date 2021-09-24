@@ -1,7 +1,7 @@
 /*
 	cson
 	File:/tests/test.c
-	Date:2021.09.20
+	Date:2021.09.21
 	By MIT License.
 	Copyright (c) 2021 Suote127.All rights reserved.
 */
@@ -29,9 +29,10 @@ void print_value(CSON_Context *ctx,const CSON_Value *value)
 
 int main(void)
 {
+	char temp[1024] = {0};
 	char *err = NULL;
-	const char *test = ",1";
-	if (cson_parse(test,print_value,&err,NULL))
+	scanf("%s",temp);
+	if (cson_parse(temp,print_value,&err,NULL))
 		puts(err);
 	return 0;
 }
