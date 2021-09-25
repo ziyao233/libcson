@@ -1,7 +1,7 @@
 /*
 	cson
 	File:/src/cson.c
-	Date:2021.09.21
+	Date:2021.09.25
 	By MIT License.
 	Copyright (c) 2021 Suote127.All rights reserved.
 */
@@ -145,6 +145,7 @@ static void unexpected(CSON_Context *ctx,const char *expected,
 
 static void p_value(CSON_Context *ctx);
 static void p_object(CSON_Context *ctx);
+static void p_array(CSON_Context *ctx);
 
 static void p_object(CSON_Context *ctx)
 {
@@ -179,6 +180,39 @@ static void p_object(CSON_Context *ctx)
 	return;
 }
 
+static void p_array(CSON_Context *ctx)
+{
+	Token token;
+
+	char temp[24] = {0};
+	ctx->path[ctx->level] = temp;
+	ctx->level++;
+
+	prefetch(ctx,&token);
+	int i = 0;
+	while (token.type != TOKEN_EOS) {
+		sprintf(temp,"%d",i);
+
+		if (token.type == ']')
+			break;
+
+		p_value(ctx);
+
+		prefetch(ctx,&token);
+		if (token.type == ']') {
+			break;
+		} else if (token.type != ',') {
+			unexpected(ctx,"','",token);
+		}
+		next(ctx,&token);
+		i++;
+	}
+
+	ctx->level--;
+
+	return;
+}
+
 static void p_value(CSON_Context *ctx)
 {
 	Token token;
@@ -200,6 +234,11 @@ static void p_value(CSON_Context *ctx)
 		next(ctx,&token);
 		if (token.type != '}')
 			unexpected(ctx,"'}'",token);
+	} else if (token.type == '[') {
+		p_array(ctx);
+		next(ctx,&token);
+		if (token.type != ']')
+			unexpected(ctx,"']'",token);
 	} else {
 		unexpected(ctx,"value",token);
 	}
