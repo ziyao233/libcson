@@ -1,7 +1,7 @@
 /*
 	cson
 	File:/src/cson.c
-	Date:2021.09.25
+	Date:2021.10.15
 	By MIT License.
 	Copyright (c) 2021 Suote127.All rights reserved.
 */
@@ -155,6 +155,8 @@ static void p_object(CSON_Context *ctx)
 	ctx->level++;
 
 	while (token.type != TOKEN_EOS) {
+		if (token.type == '}')
+			break;
 		if (token.type != TOKEN_STRING)
 			unexpected(ctx,"string",token);
 		next(ctx,&token);
