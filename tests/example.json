@@ -1,0 +1,15 @@
+{
+	"service":
+		[
+			{
+				"name":	"sgs_server",
+				"path":	"/usr/bin/sgs_server",
+				"arg":	""
+			},
+			{
+				"name":	"login",
+				"path":	"/bin/login",
+				"arg":	"-l"
+			}
+		]
+}
