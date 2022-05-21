@@ -1,7 +1,7 @@
 # cson
 # Date:2021.09.18
 # File:/src/Makefile
-# Copyright (c) 2021 Suote127.All rights reserved.
+# Copyright (c) 2021-2022 Ziyao.All rights reserved.
 
 # Configure
 CONF_DEBUG_OPTION:=-g -O0

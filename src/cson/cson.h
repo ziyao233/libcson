@@ -3,7 +3,7 @@
 	File:/src/cson/cson.h
 	Date:2021.09.20
 	By MIT License.
-	Copyright (c) 2021 Suote127.All rights reserved.
+	Copyright (c) 2021-2022 Ziyao.All rights reserved.
 */
 
 #ifndef __CSON_H_INC__

@@ -3,7 +3,7 @@
 	File:/tests/test.c
 	Date:2021.10.15
 	By MIT License.
-	Copyright (c) 2021 Suote127.All rights reserved.
+	Copyright (c) 2021-2022 Ziyao.All rights reserved.
 */
 
 #include<assert.h>
